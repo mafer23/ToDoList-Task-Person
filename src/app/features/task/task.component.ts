@@ -1,13 +1,15 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule,FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDivider, MatDividerModule } from '@angular/material/divider';
 import {MatSelectModule} from '@angular/material/select';
+import { initFlowbite } from 'flowbite';
 import { LocalStorageService } from '../../services/local-storage.service'; // Asegúrate de que la ruta sea correcta
 import { Subscription } from 'rxjs/internal/Subscription';
 import { v4 as uuidv4 } from 'uuid';
 import { CommonModule } from '@angular/common'; // Importa CommonModule
+import { MatButtonModule } from '@angular/material/button';
 
 interface People {
   value: string;
@@ -20,6 +22,7 @@ interface Person {
   skills: string[];
 }
 
+
 interface Task {
   id: string;
   name: string;
@@ -27,24 +30,42 @@ interface Task {
   completed: boolean;
   selectedPeople: Person[];
 }
+
+interface Progress {
+  value: boolean;
+  viewValue: string;
+}
+
+
 @Component({
   selector: 'app-task',
   standalone: true,
   imports: [ReactiveFormsModule,MatIconModule, MatDivider,MatSelectModule,     CommonModule ,
-    MatDividerModule ],
+    MatDividerModule,FormsModule,MatButtonModule, MatDividerModule, MatIconModule],
   templateUrl: './task.component.html',
   styleUrl: './task.component.css'
 })
 export class TaskComponent {
  
-   // Asegúrate de que esta propiedad esté declarada
-   tasks: Task[] = []; 
-   tasksList: Task[] = []; 
-   person: Person[] = [];
-   peoples: People[] = []; // Cambia esto a un array vacío inicialmente
+  selectedUserId!: string;
+  selectedValue!: string;
+  tasks: Task[] = []; 
+  tasksList: Task[] = []; 
+  person: Person[] = [];
+  peoples: People[] = []; 
   private subscription!: Subscription;
   processedTasks: string[] = []
+  newCompletionStatus: string = ''; 
+  isVisible: boolean = true;
   
+  status: Progress[] = [
+    {value: true, viewValue: 'Completada'},
+    {value: false, viewValue: 'Pediente'}
+    
+  ];
+
+
+
 
 fb = inject(FormBuilder)
 localStorageService = inject(LocalStorageService); // Inyecta el servicio
@@ -56,7 +77,10 @@ taskForm: FormGroup = this.fb.group({
 
 })
 
+
+
 ngOnInit(): void {
+  initFlowbite();
   this.loadPeople();
   this.subscription = this.localStorageService.personas$.subscribe((people) => {
     this.peoples = people.map((person: any, index: number) => ({
@@ -108,6 +132,41 @@ getTaskList(){
    return this.tasksList;
 }
 
+openModal(id: string) {
+ // Guardar el ID del usuario seleccionado
+ this.selectedUserId = id;
+ console.log('update'+ this.selectedUserId)
+}
+
+updateTaskCompletion() {
+
+  this.selectedUserId;
+
+  const storedList: any[] = JSON.parse(localStorage.getItem('tasks') || '[]');   
+
+  const updatedList = storedList.map(task => {
+    
+    if (task.id === this.selectedUserId) {
+
+  
+      return { ...task, completed: !task.completed }; // Cambiar el valor de completed
+      
+    }
+    return task;
+  });
+
+  // Guardar la lista actualizada en el localStorage
+  localStorage.setItem('tasks', JSON.stringify(updatedList));
+
+  
+}
+ 
+allTask(){
+  this.selectedUserId;
+ 
+  const storedList: any[] = JSON.parse(localStorage.getItem('tasks') || '[]');   
+  console.log(storedList)
+}
 
 onSubmit():void{
   this.createTask();
