@@ -58,11 +58,10 @@ export class TaskComponent {
   newCompletionStatus: string = ''; 
   isVisible: boolean = true;
   
-  status: Progress[] = [
-    {value: true, viewValue: 'Completada'},
-    {value: false, viewValue: 'Pediente'}
-    
-  ];
+ 
+
+  filteredTasks = [...this.tasks]; // Inicialmente, todas las tareas
+  showCompleted: boolean = false; // Por defecto no se filtran las completadas
 
 
 
@@ -104,6 +103,20 @@ loadPeople(): void {
     age: person.edad, // Asegúrate de que 'edad' esté en tu objeto
     skills: person.habilidades 
   }));
+}
+
+ // Método para filtrar las tareas
+ filterTasks(filter: string) {
+  switch (filter) {
+    case 'completed':
+      this.filteredTasks = this.tasks.filter(task => task.completed);
+      break;
+    case 'pending':
+      this.filteredTasks = this.tasks.filter(task => !task.completed);
+      break;
+    default:
+      this.filteredTasks = [...this.tasks]; // Mostrar todas las tareas
+  }
 }
 
 createTask() {
@@ -161,12 +174,8 @@ updateTaskCompletion() {
   
 }
  
-allTask(){
-  this.selectedUserId;
- 
-  const storedList: any[] = JSON.parse(localStorage.getItem('tasks') || '[]');   
-  console.log(storedList)
-}
+
+
 
 onSubmit():void{
   this.createTask();

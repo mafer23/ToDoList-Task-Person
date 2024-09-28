@@ -52,13 +52,14 @@
   <div class="border-b border-gray-300 pb-2 mb-4">
     <section>
       <div class="example-button-row">
-        <button mat-raised-button (click)="allTask()">Todas</button>
-        <button mat-raised-button>Completadas</button>
-        <button mat-raised-button>Pendientes</button>
+        <button mat-raised-button (click)="filterTasks('all')">Todas</button>
+        <button mat-raised-button (click)="filterTasks('completed')">Completadas</button>
+        <button mat-raised-button (click)="filterTasks('pending')">Pendientes</button>
       </div>
     </section>
   </div>
  
+
 
   <!-- Tarea A -->
   
