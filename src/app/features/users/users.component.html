@@ -1,0 +1,78 @@
+<div class="p-6 max-w-lg mx-auto bg-white rounded-xl shadow-md space-y-4">
+    <h2 class="text-xl font-bold">Personas Asociadas</h2>
+  
+    <form [formGroup]="personaForm" (ngSubmit)="onSubmit()">
+      <!-- Nombre completo -->
+      <div class="mb-4">
+        <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre completo:</label>
+        <input
+          type="text"
+          id="nombre"
+          formControlName="nombre"
+          class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          placeholder="Nombre completo"
+        />
+      </div>
+  
+      <!-- Edad -->
+      <div class="mb-4">
+        <label for="edad" class="block text-sm font-medium text-gray-700">Edad:</label>
+        <input
+          type="number"
+          id="edad"
+          formControlName="edad"
+          class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          placeholder="Edad"
+        />
+      </div>
+  
+      <!-- Habilidades -->
+      <div class="mb-4">
+        <h3 class="font-bold">Habilidades:</h3>
+  
+        <div class="flex space-x-2 mt-4">
+            <mat-form-field class="example-form-field">
+                <mat-label>Habilidades tecnicas</mat-label>
+                <mat-chip-grid #reactiveChipGrid aria-label="Enter reactive form keywords" id="reactive-chip-grid" formControlName=" habilidades">
+                @for (keyword of reactiveKeywords(); track keyword) {
+                  <mat-chip-row (removed)="removeReactiveKeyword(keyword)">
+                    {{keyword}}
+                  <button matChipRemove aria-label="'remove reactive form' + keyword">
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                  </mat-chip-row>
+                }
+                </mat-chip-grid>
+                <input
+                  placeholder="New keyword..."
+                  [matChipInputFor]="reactiveChipGrid"
+                  (matChipInputTokenEnd)="addReactiveKeyword($event)"
+
+                />
+              </mat-form-field>
+        </div>
+      </div>
+  
+      <!-- Botones para añadir/eliminar personas -->
+      <div class="flex space-x-2 mt-4">
+        <button
+        type="button"
+        (click)="saveToLocalStorage()"
+        [disabled]="isAdding" 
+        class="p-2 bg-green-500 text-white rounded"
+    >
+        Añadir Persona
+    </button>
+        <button
+          type="button"
+          (click)="eliminarPersona()"
+          class="p-2 bg-red-500 text-white rounded"
+        >
+          Eliminar Persona
+        </button>
+      </div>
+  
+
+    </form>
+  </div>
+  
